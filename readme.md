@@ -11,7 +11,7 @@ Express Kun is your friend and servant.
 
 ## API
 
-### function withMiddleware(router: Router, middlewares: RequestHandler[]): Router;
+### `withMiddleware(router: Router, middlewares: RequestHandler[]): Router`;
 
 with middleware apply middleware to your router and return back the midlewared router
 
