@@ -181,3 +181,9 @@ groupPrefix(
   });
 });
 ```
+
+## Features
+
+- Functional Like
+- extendable
+- built with Typescript
