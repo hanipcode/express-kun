@@ -56,6 +56,53 @@ protectedUploadRouter.post("/user", (req, res) => {
 }))
 ```
 
+### `withErrorHandler(router: Router, errorHandler: ErrorRequestHandler): Router;`
+
+withErrorHandler returning a router that when that route error it will use the provided error handler
+
+for example
+
+```javascript
+function errorHandler(err, req, res, next) {
+  res.json({
+    error: true,
+    mesage: "wow error"
+  });
+}
+
+const withErrorHandlerRoute = withErrorHandler(router, errorHandler);
+
+// when accessed will return json { error: true, message: 'wow error' }
+withErrorHandlerRoute.get("/errorrouter", (req: Request, res: Response) => {
+  throw new Error("Error here");
+});
+```
+
+this provide further more functionality to compose middleware with error handler
+
+```javascript
+function errorHandler(err, req, res, next) {
+  res.json({
+    error: true,
+    mesage: "wow error"
+  });
+}
+
+function middleware(req, res, next) {
+  console.log("midleware");
+  next();
+}
+
+const middlewaredRoute = withMiddleware(router, middleware);
+
+const withErrorHandlerRoute = withErrorHandler(middlewaredRoute, errorHandler);
+
+// when accessed will return json { error: true, message: 'wow error' }
+withErrorHandlerRoute.get("/errorrouter", (req: Request, res: Response) => {
+  throw new Error("Error here");
+});
+```
+
 ### `groupErrorHandler(routerOrApp: RouterOrApplication, handler: ErrorRequestHandler): (callback: (router: Router) => void) => void;`
 
 this wass Laravel-like route for reusable error handling. you can write it like this
