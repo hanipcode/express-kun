@@ -103,6 +103,49 @@ withErrorHandlerRoute.get("/errorrouter", (req: Request, res: Response) => {
 });
 ```
 
+### `partialWithMiddleware(middlewares: RequestHandler[]): (router: Router) => void`
+
+partially use withMiddleware. this is useful if you want to create abstraction of midleware. for example you want to build helper to generate route
+with auth middleware. you can do like this
+
+```javascript
+// in generateAuthMiddleware.js
+const generateAuthMiddleware = partialWithMiddleware(authMiddleware);
+
+// in your routes.js
+const router = new Router();
+const protectedRoute = generateAuthMiddleware(router);
+```
+
+this even support supplying partialWithmiddleware with middleware for easy composition
+
+```javascript
+// in generateAuthMiddleware.js
+const generateAuthMiddleware = partialWithMiddleware(authMiddleware);
+
+// in uploadProtectedMiddleware.js
+const generateUploadProtectedMiddleware = generateAuthMiddleware(
+  uploadMiddleware
+);
+
+// in your routes.js
+const router = new Router();
+const uploadProtectedRouter = generateUploadProtectedMiddleware(router);
+```
+
+### `partialWithErrorHandler(errorHandler: ErrorRequestHandler): (router: Router) => void;`
+
+like partialWithMiddleware but for error handler
+
+```javascript
+// in generateLoggingErrorRoute.js
+const loggedErrorHandler = partialWithErrorHandler(errorHandler);
+
+// in your routes.js
+const router = new Router();
+const loggedRoute = generateLoggingErrorRoute(routeer);
+```
+
 ### `groupErrorHandler(routerOrApp: RouterOrApplication, handler: ErrorRequestHandler): (callback: (router: Router) => void) => void;`
 
 this wass Laravel-like route for reusable error handling. you can write it like this
