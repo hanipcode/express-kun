@@ -20,14 +20,13 @@ export default function partialWithMiddleware(
   middlewares: SupportedMiddleware
 ): (routerOrMiddleware: RotuerOrMiddleware) => void {
   return function(routerOrMiddleware: RotuerOrMiddleware) {
+    let connectedMiddleware: RequestHandler[];
+    if (isMiddlewareArray(middlewares)) {
+      connectedMiddleware = middlewares;
+    } else {
+      connectedMiddleware = [middlewares];
+    }
     if (isRouter(routerOrMiddleware)) {
-      let connectedMiddleware: RequestHandler[];
-      if (isMiddlewareArray(middlewares)) {
-        connectedMiddleware = middlewares;
-      } else {
-        connectedMiddleware = [middlewares];
-      }
-
       const routeObject = {
         use: routerOrMiddleware.use,
         get: (path: PathParams, ...handlers: any[]): Router => {
@@ -68,6 +67,15 @@ export default function partialWithMiddleware(
       };
     }
 
-    return partialWithMiddleware(routerOrMiddleware);
+    let reconnectedMiddleware: RequestHandler[];
+    if (isMiddlewareArray(routerOrMiddleware)) {
+      reconnectedMiddleware = routerOrMiddleware;
+    } else {
+      reconnectedMiddleware = [routerOrMiddleware];
+    }
+    return partialWithMiddleware([
+      ...connectedMiddleware,
+      ...reconnectedMiddleware
+    ]);
   };
 }
