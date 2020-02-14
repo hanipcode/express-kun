@@ -2,9 +2,15 @@
 
 Express Kun is providing you common helper for common express use case with functional programming mindset.
 
+## Installation
+
+`yarn add express-kun`
+or
+`npm install express-kun`
+
 ## Philosophy
 
-An helper should only extends the functionality without redefining how we write our application.
+Express Kun philosophy is An helper should only extends the functionality without redefining how we write our application.
 think of it as Redux vs Mobx. in Redux, you don't redefine how you write your components. redux only extends the functionality fia `connect` function to access your reducer. meanwhile MobX requiring you to wrap your function in decorator. by extending instead of redefining we can achieve smoother learning curve and more expressive.
 Express Kun does not dictate you. instead, you provided it with `express` `Router` object and returning modified `Router` express object or providing callback to play with modified `Router` Object.
 Express Kun is your friend and servant.
