@@ -23,6 +23,8 @@ export default function jwtAuthMiddleware(
         preCheckFun(req, res);
       }
       await jwt.verify(token, secretKey, verifyOptions);
+      res.locals.token = token;
+      res.locals.decoded = jwt.decode(token);
       next();
     } catch (e) {
       if (errorHandler) {
