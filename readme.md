@@ -17,7 +17,9 @@ Express Kun is your friend and servant.
 
 ## API
 
-### `withMiddleware(router: Router, middlewares: RequestHandler[]): Router`;
+## Base
+
+#### `withMiddleware(router: Router, middlewares: RequestHandler[]): Router`;
 
 with middleware apply middleware to your router and return back the midlewared router
 
@@ -56,7 +58,7 @@ protectedUploadRouter.post("/user", (req, res) => {
 }))
 ```
 
-### `withErrorHandler(router: Router, errorHandler: ErrorRequestHandler): Router;`
+#### `withErrorHandler(router: Router, errorHandler: ErrorRequestHandler): Router;`
 
 withErrorHandler returning a router that when that route error it will use the provided error handler
 
@@ -103,7 +105,7 @@ withErrorHandlerRoute.get("/errorrouter", (req: Request, res: Response) => {
 });
 ```
 
-### `partialWithMiddleware(middlewares: RequestHandler[]): (router: Router) => void`
+#### `partialWithMiddleware(middlewares: RequestHandler[]): (router: Router) => void`
 
 partially use withMiddleware. this is useful if you want to create abstraction of midleware. for example you want to build helper to generate route
 with auth middleware. you can do like this
@@ -133,7 +135,7 @@ const router = new Router();
 const uploadProtectedRouter = generateUploadProtectedMiddleware(router);
 ```
 
-### `partialWithErrorHandler(errorHandler: ErrorRequestHandler): (router: Router) => void;`
+#### `partialWithErrorHandler(errorHandler: ErrorRequestHandler): (router: Router) => void;`
 
 like partialWithMiddleware but for error handler
 
@@ -146,7 +148,7 @@ const router = new Router();
 const loggedRoute = generateLoggingErrorRoute(routeer);
 ```
 
-### `groupErrorHandler(routerOrApp: RouterOrApplication, handler: ErrorRequestHandler): (callback: (router: Router) => void) => void;`
+#### `groupErrorHandler(routerOrApp: RouterOrApplication, handler: ErrorRequestHandler): (callback: (router: Router) => void) => void;`
 
 this wass Laravel-like route for reusable error handling. you can write it like this
 
@@ -227,7 +229,79 @@ groupErrorHandler(
 });
 ```
 
-### `groupMiddleware(router: Router, middlewares: SupportedMiddleware): (callback: (router: Router) => void) => void;`
+## Extended
+
+#### withJWTAuthMiddleware(router: Router, secretKey: string, getToken?: GetTokenFun, preCheckFun?: PreCheckFun, errorHandler?: ErrorRequestHandler, verifyOptions?: jwt.VerifyOptions): Router;
+
+##### typings
+
+```typescript
+type GetTokenFun = (req: Request) => any;
+type PreCheckFun = (req: Request, res: Response) => any;
+```
+
+##### use
+
+```typescript
+withJWTAuthMiddleware(router, "mySecretKey");
+```
+
+withJWTAuthMiddleware make it simple to create middleware for authentication if you are using jwt. the only required parameter is `secretKeey` that you use
+to sign your jwt. by default it will get token from the bearer from authorization header for example
+
+```
+Headers: ...
+  Authorizatation: Bearer 321lnasljndjijno214
+```
+
+but you can also provide getToken Function that will pass the request object as parameter and should return the token, for example
+
+```typescript
+function getTokenFromBearer(req: Request) {
+  const authorization = req.headers.authorization;
+  if (!authorization) {
+    throw new Error("No Authorization Header");
+  }
+  try {
+    const token = authorization?.split("Bearer ")[1];
+    return token;
+  } catch {
+    throw new Error("Invalid Token Format");
+  }
+}
+```
+
+and then use like below
+
+```typescript
+withJWTAuthMiddleware(router, "mySecretKey", getTokenFromBearer);
+```
+
+you can also provide pre check for example to check if user exist
+
+```typescript
+function checkUser(req: Request, res: Response) {
+  // check user object
+  // ...
+  // user not found
+  if (!user) {
+    res.status(404).json({
+      message: "User Not Found",
+      error: true
+    });
+  }
+}
+```
+
+and then use like below
+
+```typescript
+withJWTAuthMiddleware(router, "mySecretKey", getTokenFromBearer, checkUser);
+```
+
+## Callback API
+
+#### `groupMiddleware(router: Router, middlewares: SupportedMiddleware): (callback: (router: Router) => void) => void;`
 
 This is like `groupErrorHandler` but instead of error handler you can pass middleware here
 for example
@@ -253,7 +327,7 @@ groupMiddleware(
 });
 ```
 
-### `groupPrefix(router: Router, prefix: string): (callback: (router: Router) => void) => void;`
+#### `groupPrefix(router: Router, prefix: string): (callback: (router: Router) => void) => void;`
 
 Provide laravel-like grouping route/controller with the same prefix
 
