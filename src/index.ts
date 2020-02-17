@@ -10,3 +10,6 @@ export { default as groupErrorHandler } from "./groupErrorHandler";
 
 // lib
 export { default as getTokenFromBearer } from "./lib/getTokenFromBearer";
+
+// ErrorTypese
+export { default as TokenError } from "./lib/TokenError";

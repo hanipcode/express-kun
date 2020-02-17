@@ -1,6 +1,6 @@
 {
   "name": "express-kun",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Functional Express Helper",
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",

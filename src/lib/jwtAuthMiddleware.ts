@@ -1,5 +1,6 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
+import TokenError from "./TokenError";
 
 type GetTokenFun = (req: Request) => any;
 type PreCheckFun = (req: Request, res: Response) => any;
@@ -27,7 +28,7 @@ export default function jwtAuthMiddleware(
         errorHandler(e, req, res, next);
         return;
       }
-      if (e instanceof jwt.JsonWebTokenError) {
+      if (e instanceof jwt.JsonWebTokenError || e instanceof TokenError) {
         res.status(401).json({
           message: "Invalid Token",
           error: e.message
