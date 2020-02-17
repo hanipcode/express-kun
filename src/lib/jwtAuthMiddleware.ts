@@ -29,12 +29,15 @@ export default function jwtAuthMiddleware(
       }
       if (e instanceof jwt.JsonWebTokenError) {
         res.status(401).json({
-          message: "Invalid Token"
+          message: "Invalid Token",
+          error: e.message
         });
         return;
       }
       res.status(500).json({
-        message: "Internal server Error"
+        message: "Internal server Error",
+        error: e.message,
+        stack: e.stack
       });
     }
   };
