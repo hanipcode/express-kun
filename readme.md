@@ -243,7 +243,7 @@ type PreCheckFun = (req: Request, res: Response) => any;
 ##### use
 
 ```typescript
-withJWTAuthMiddleware(router, "mySecretKey");
+const protectedRouter = withJWTAuthMiddleware(router, "mySecretKey");
 ```
 
 withJWTAuthMiddleware make it simple to create middleware for authentication if you are using jwt. the only required parameter is `secretKeey` that you use
@@ -274,7 +274,11 @@ function getTokenFromBearer(req: Request) {
 and then use like below
 
 ```typescript
-withJWTAuthMiddleware(router, "mySecretKey", getTokenFromBearer);
+const protectedRouter = withJWTAuthMiddleware(
+  router,
+  "mySecretKey",
+  getTokenFromBearer
+);
 ```
 
 you can also provide pre check for example to check if user exist
@@ -297,6 +301,21 @@ and then use like below
 
 ```typescript
 withJWTAuthMiddleware(router, "mySecretKey", getTokenFromBearer, checkUser);
+```
+
+### `partialWithJWTAuthMiddleware(secretKey: string, getToken?: GetTokenFun, preCheckFun?: PreCheckFun, errorHandler?: ErrorRequestHandler, verifyOptions?: jwt.VerifyOptions)`
+
+this function is like withJWTAuthMiddleware but you can pass the Router later;
+
+```typescript
+export const authMiddleware = partialWithJWTAuthMiddleware(
+  "mySecretKey",
+  getTokenFromBearer,
+  checkUser
+);
+
+// later
+const protectedRoute = authMiddleware(router);
 ```
 
 ## Callback API
