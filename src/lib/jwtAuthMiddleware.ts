@@ -23,6 +23,7 @@ export default function jwtAuthMiddleware(
         preCheckFun(req, res);
       }
       await jwt.verify(token, secretKey, verifyOptions);
+      next();
     } catch (e) {
       if (errorHandler) {
         errorHandler(e, req, res, next);
