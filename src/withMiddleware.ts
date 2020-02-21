@@ -23,7 +23,6 @@ export default function withMiddleware(
   const routeObject = {
     use: router.use,
     get: (path: PathParams, ...handlers: any[]): Router => {
-      console.log("dipanggil");
       return router.get(path, ...connectedMiddleware, ...handlers);
     },
     post: (path: PathParams, ...handlers: any[]) => {
@@ -37,9 +36,25 @@ export default function withMiddleware(
     }
   };
 
-  // @ts-ignore
-  return {
-    ...router,
-    ...routeObject
+  router.get = (path: PathParams, ...handlers: any[]): Router => {
+    router.get(path, ...connectedMiddleware, ...handlers);
+    return router;
   };
+
+  router.post = (path: PathParams, ...handlers: any[]) => {
+    router.post(path, ...connectedMiddleware, ...handlers);
+    return router;
+  };
+
+  router.delete = (path: PathParams, ...handlers: any[]) => {
+    router.delete(path, ...connectedMiddleware, ...handlers);
+    return router;
+  };
+
+  router.put = (path: PathParams, ...handlers: any[]) => {
+    router.put(path, ...connectedMiddleware, ...handlers);
+    return router;
+  };
+
+  return router;
 }

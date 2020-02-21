@@ -27,44 +27,30 @@ export default function partialWithMiddleware(
       connectedMiddleware = [middlewares];
     }
     if (isRouter(routerOrMiddleware)) {
-      const routeObject = {
-        use: routerOrMiddleware.use,
-        get: (path: PathParams, ...handlers: any[]): Router => {
-          console.log("dipanggil");
-          return routerOrMiddleware.get(
-            path,
-            ...connectedMiddleware,
-            ...handlers
-          );
-        },
-        post: (path: PathParams, ...handlers: any[]) => {
-          return routerOrMiddleware.post(
-            path,
-            ...connectedMiddleware,
-            ...handlers
-          );
-        },
-        delete: (path: PathParams, ...handlers: any[]) => {
-          return routerOrMiddleware.delete(
-            path,
-            ...connectedMiddleware,
-            ...handlers
-          );
-        },
-        put: (path: PathParams, ...handlers: any[]) => {
-          return routerOrMiddleware.put(
-            path,
-            ...connectedMiddleware,
-            ...handlers
-          );
-        }
+      routerOrMiddleware.get = (
+        path: PathParams,
+        ...handlers: any[]
+      ): Router => {
+        routerOrMiddleware.get(path, ...connectedMiddleware, ...handlers);
+        return routerOrMiddleware;
       };
 
-      // @ts-ignore
-      return {
-        ...routerOrMiddleware,
-        ...routeObject
+      routerOrMiddleware.post = (path: PathParams, ...handlers: any[]) => {
+        routerOrMiddleware.post(path, ...connectedMiddleware, ...handlers);
+        return routerOrMiddleware;
       };
+
+      routerOrMiddleware.delete = (path: PathParams, ...handlers: any[]) => {
+        routerOrMiddleware.delete(path, ...connectedMiddleware, ...handlers);
+        return routerOrMiddleware;
+      };
+
+      routerOrMiddleware.put = (path: PathParams, ...handlers: any[]) => {
+        routerOrMiddleware.put(path, ...connectedMiddleware, ...handlers);
+        return routerOrMiddleware;
+      };
+
+      return routerOrMiddleware;
     }
 
     let reconnectedMiddleware: RequestHandler[];

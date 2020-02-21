@@ -1,38 +1,39 @@
 import { ErrorRequestHandler, Router } from "express";
 import { IRouter, PathParams, RequestHandler } from "express-serve-static-core";
+import wrap from "./lib/wrap";
 
 export default function partialWithErrorHandler(
   errorHandler: ErrorRequestHandler
 ): (router: Router) => void {
   return function(router: Router) {
-    const routeObject = {
-      use: router.use,
-      get: (path: PathParams, ...handlers: any[]): Router => {
-        router.get(path, ...handlers);
-        router.use(errorHandler);
-        return router;
-      },
-      post: (path: PathParams, ...handlers: any[]) => {
-        router.post(path, ...handlers);
-        router.use(errorHandler);
-        return router;
-      },
-      delete: (path: PathParams, ...handlers: any[]) => {
-        router.delete(path, ...handlers);
-        router.use(errorHandler);
-        return router;
-      },
-      put: (path: PathParams, ...handlers: any[]) => {
-        router.put(path, ...handlers);
-        router.use(errorHandler);
-        return router;
-      }
+    router.get = (path: PathParams, ...handlers: any[]): Router => {
+      const mappedHandlers: any[] = handlers.map(wrap);
+      router.get(path, ...mappedHandlers);
+      router.use(errorHandler);
+      return router;
     };
 
-    // @ts-ignore
-    return {
-      ...router,
-      ...routeObject
+    router.post = (path: PathParams, ...handlers: any[]) => {
+      const mappedHandlers: any[] = handlers.map(wrap);
+      router.post(path, mappedHandlers);
+      router.use(errorHandler);
+      return router;
     };
+
+    router.delete = (path: PathParams, ...handlers: any[]) => {
+      const mappedHandlers: any[] = handlers.map(wrap);
+      router.delete(path, mappedHandlers);
+      router.use(errorHandler);
+      return router;
+    };
+
+    router.put = (path: PathParams, ...handlers: any[]) => {
+      const mappedHandlers: any[] = handlers.map(wrap);
+      router.put(path, mappedHandlers);
+      router.use(errorHandler);
+      return router;
+    };
+
+    return router;
   };
 }
