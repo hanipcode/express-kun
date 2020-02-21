@@ -20,29 +20,33 @@ export default function withMiddleware(
     connectedMiddleware = [middlewares];
   }
 
-  router.get = function(path: PathParams, ...handlers: any[]) {
+  const extendedRouter = Router();
+
+  extendedRouter.get = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     route.get.apply(route, [...connectedMiddleware, ...handlers]);
     return this;
   };
 
-  router.post = function(path: PathParams, ...handlers: any[]) {
+  extendedRouter.post = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     route.post.apply(route, [...connectedMiddleware, ...handlers]);
     return this;
   };
 
-  router.put = function(path: PathParams, ...handlers: any[]) {
+  extendedRouter.put = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     route.put.apply(route, [...connectedMiddleware, ...handlers]);
     return this;
   };
 
-  router.delete = function(path: PathParams, ...handlers: any[]) {
+  extendedRouter.delete = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     route.delete.apply(route, [...connectedMiddleware, ...handlers]);
     return this;
   };
 
-  return router;
+  router.use(extendedRouter);
+
+  return extendedRouter;
 }

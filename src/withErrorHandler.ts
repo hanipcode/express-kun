@@ -6,7 +6,8 @@ export default function withErrorHandler(
   router: Router,
   errorHandler: ErrorRequestHandler
 ): Router {
-  router.get = function(path: PathParams, ...handlers: any[]) {
+  const extendedRouter = Router();
+  extendedRouter.get = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     const mappedHandlers = handlers.map(wrap);
     route.get.apply(route, mappedHandlers);
@@ -14,7 +15,7 @@ export default function withErrorHandler(
     return this;
   };
 
-  router.post = function(path: PathParams, ...handlers: any[]) {
+  extendedRouter.post = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     const mappedHandlers = handlers.map(wrap);
     route.post.apply(route, mappedHandlers);
@@ -22,7 +23,7 @@ export default function withErrorHandler(
     return this;
   };
 
-  router.put = function(path: PathParams, ...handlers: any[]) {
+  extendedRouter.put = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     const mappedHandlers = handlers.map(wrap);
     route.put.apply(route, mappedHandlers);
@@ -30,7 +31,7 @@ export default function withErrorHandler(
     return this;
   };
 
-  router.delete = function(path: PathParams, ...handlers: any[]) {
+  extendedRouter.delete = function(path: PathParams, ...handlers: any[]) {
     const route = this.route(path);
     const mappedHandlers = handlers.map(wrap);
     route.delete.apply(route, mappedHandlers);
@@ -38,5 +39,6 @@ export default function withErrorHandler(
     return this;
   };
 
-  return router;
+  router.use(extendedRouter);
+  return extendedRouter;
 }

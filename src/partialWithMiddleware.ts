@@ -27,34 +27,33 @@ export default function partialWithMiddleware(
       connectedMiddleware = [middlewares];
     }
     if (isRouter(routerOrMiddleware)) {
-      routerOrMiddleware.get = function(path: PathParams, ...handlers: any[]) {
+      const extendedRouter = Router();
+      extendedRouter.get = function(path: PathParams, ...handlers: any[]) {
         const route = this.route(path);
         route.get.apply(route, [...connectedMiddleware, ...handlers]);
         return this;
       };
 
-      routerOrMiddleware.post = function(path: PathParams, ...handlers: any[]) {
+      extendedRouter.post = function(path: PathParams, ...handlers: any[]) {
         const route = this.route(path);
         route.post.apply(route, [...connectedMiddleware, ...handlers]);
         return this;
       };
 
-      routerOrMiddleware.put = function(path: PathParams, ...handlers: any[]) {
+      extendedRouter.put = function(path: PathParams, ...handlers: any[]) {
         const route = this.route(path);
         route.put.apply(route, [...connectedMiddleware, ...handlers]);
         return this;
       };
 
-      routerOrMiddleware.delete = function(
-        path: PathParams,
-        ...handlers: any[]
-      ) {
+      extendedRouter.delete = function(path: PathParams, ...handlers: any[]) {
         const route = this.route(path);
         route.delete.apply(route, [...connectedMiddleware, ...handlers]);
         return this;
       };
 
-      return routerOrMiddleware;
+      routerOrMiddleware.use(extendedRouter);
+      return extendedRouter;
     }
 
     let reconnectedMiddleware: RequestHandler[];
