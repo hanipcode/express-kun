@@ -1,42 +1,42 @@
-import { ErrorRequestHandler, Router, NextFunction } from "express";
-import {
-  IRouter,
-  PathParams,
-  RequestHandler,
-  IRouterMatcher
-} from "express-serve-static-core";
+import { ErrorRequestHandler, Router } from "express";
+import { IRouter, PathParams, RequestHandler } from "express-serve-static-core";
 import wrap from "./lib/wrap";
 
 export default function withErrorHandler(
   router: Router,
   errorHandler: ErrorRequestHandler
 ): Router {
-  router.get = (path: PathParams, ...handlers: any[]): Router => {
-    const mappedHandlers: any[] = handlers.map(wrap);
-    router.get(path, ...mappedHandlers);
-    router.use(errorHandler);
-    return router;
+  router.get = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    const mappedHandlers = handlers.map(wrap);
+    route.get.apply(route, mappedHandlers);
+    this.use(errorHandler);
+    return this;
   };
 
-  router.post = (path: PathParams, ...handlers: any[]) => {
-    const mappedHandlers: any[] = handlers.map(wrap);
-    router.post(path, mappedHandlers);
-    router.use(errorHandler);
-    return router;
+  router.post = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    const mappedHandlers = handlers.map(wrap);
+    route.post.apply(route, mappedHandlers);
+    this.use(errorHandler);
+    return this;
   };
 
-  router.delete = (path: PathParams, ...handlers: any[]) => {
-    const mappedHandlers: any[] = handlers.map(wrap);
-    router.delete(path, mappedHandlers);
-    router.use(errorHandler);
-    return router;
+  router.put = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    const mappedHandlers = handlers.map(wrap);
+    route.put.apply(route, mappedHandlers);
+    this.use(errorHandler);
+    return this;
   };
 
-  router.put = (path: PathParams, ...handlers: any[]) => {
-    const mappedHandlers: any[] = handlers.map(wrap);
-    router.put(path, mappedHandlers);
-    router.use(errorHandler);
-    return router;
+  router.delete = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    const mappedHandlers = handlers.map(wrap);
+    route.delete.apply(route, mappedHandlers);
+    this.use(errorHandler);
+    return this;
   };
+
   return router;
 }

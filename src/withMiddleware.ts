@@ -20,40 +20,28 @@ export default function withMiddleware(
     connectedMiddleware = [middlewares];
   }
 
-  const routeObject = {
-    use: router.use,
-    get: (path: PathParams, ...handlers: any[]): Router => {
-      return router.get(path, ...connectedMiddleware, ...handlers);
-    },
-    post: (path: PathParams, ...handlers: any[]) => {
-      return router.post(path, ...connectedMiddleware, ...handlers);
-    },
-    delete: (path: PathParams, ...handlers: any[]) => {
-      return router.delete(path, ...connectedMiddleware, ...handlers);
-    },
-    put: (path: PathParams, ...handlers: any[]) => {
-      return router.put(path, ...connectedMiddleware, ...handlers);
-    }
+  router.get = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    route.get.apply(route, [...connectedMiddleware, ...handlers]);
+    return this;
   };
 
-  router.get = (path: PathParams, ...handlers: any[]): Router => {
-    router.get(path, ...connectedMiddleware, ...handlers);
-    return router;
+  router.post = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    route.post.apply(route, [...connectedMiddleware, ...handlers]);
+    return this;
   };
 
-  router.post = (path: PathParams, ...handlers: any[]) => {
-    router.post(path, ...connectedMiddleware, ...handlers);
-    return router;
+  router.put = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    route.put.apply(route, [...connectedMiddleware, ...handlers]);
+    return this;
   };
 
-  router.delete = (path: PathParams, ...handlers: any[]) => {
-    router.delete(path, ...connectedMiddleware, ...handlers);
-    return router;
-  };
-
-  router.put = (path: PathParams, ...handlers: any[]) => {
-    router.put(path, ...connectedMiddleware, ...handlers);
-    return router;
+  router.delete = function(path: PathParams, ...handlers: any[]) {
+    const route = this.route(path);
+    route.delete.apply(route, [...connectedMiddleware, ...handlers]);
+    return this;
   };
 
   return router;

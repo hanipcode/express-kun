@@ -27,27 +27,31 @@ export default function partialWithMiddleware(
       connectedMiddleware = [middlewares];
     }
     if (isRouter(routerOrMiddleware)) {
-      routerOrMiddleware.get = (
+      routerOrMiddleware.get = function(path: PathParams, ...handlers: any[]) {
+        const route = this.route(path);
+        route.get.apply(route, [...connectedMiddleware, ...handlers]);
+        return this;
+      };
+
+      routerOrMiddleware.post = function(path: PathParams, ...handlers: any[]) {
+        const route = this.route(path);
+        route.post.apply(route, [...connectedMiddleware, ...handlers]);
+        return this;
+      };
+
+      routerOrMiddleware.put = function(path: PathParams, ...handlers: any[]) {
+        const route = this.route(path);
+        route.put.apply(route, [...connectedMiddleware, ...handlers]);
+        return this;
+      };
+
+      routerOrMiddleware.delete = function(
         path: PathParams,
         ...handlers: any[]
-      ): Router => {
-        routerOrMiddleware.get(path, ...connectedMiddleware, ...handlers);
-        return routerOrMiddleware;
-      };
-
-      routerOrMiddleware.post = (path: PathParams, ...handlers: any[]) => {
-        routerOrMiddleware.post(path, ...connectedMiddleware, ...handlers);
-        return routerOrMiddleware;
-      };
-
-      routerOrMiddleware.delete = (path: PathParams, ...handlers: any[]) => {
-        routerOrMiddleware.delete(path, ...connectedMiddleware, ...handlers);
-        return routerOrMiddleware;
-      };
-
-      routerOrMiddleware.put = (path: PathParams, ...handlers: any[]) => {
-        routerOrMiddleware.put(path, ...connectedMiddleware, ...handlers);
-        return routerOrMiddleware;
+      ) {
+        const route = this.route(path);
+        route.delete.apply(route, [...connectedMiddleware, ...handlers]);
+        return this;
       };
 
       return routerOrMiddleware;
