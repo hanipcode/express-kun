@@ -6,41 +6,28 @@ export default function partialWithErrorHandler(
   errorHandler: ErrorRequestHandler
 ): (router: Router) => void {
   return function(router: Router) {
-    const extendedRouter = Router();
-    extendedRouter.get = function(path: PathParams, ...handlers: any[]) {
-      const route = this.route(path);
-      const mappedHandlers = handlers.map(wrap);
-      route.get.apply(route, mappedHandlers);
-      this.use(errorHandler);
-      return this;
+    const routeObject = {
+      get: function(path: PathParams, ...handlers: RequestHandler[]) {
+        const mappedHandlers = handlers.map(wrap);
+        router.get(path, mappedHandlers, errorHandler);
+      },
+      post: function(path: PathParams, ...handlers: RequestHandler[]) {
+        const mappedHandlers = handlers.map(wrap);
+        router.post(path, mappedHandlers, errorHandler);
+      },
+      put: function(path: PathParams, ...handlers: RequestHandler[]) {
+        const mappedHandlers = handlers.map(wrap);
+        router.put(path, mappedHandlers, errorHandler);
+      },
+      delete: function(path: PathParams, ...handlers: RequestHandler[]) {
+        const mappedHandlers = handlers.map(wrap);
+        router.delete(path, mappedHandlers, errorHandler);
+      }
     };
 
-    extendedRouter.post = function(path: PathParams, ...handlers: any[]) {
-      const route = this.route(path);
-      const mappedHandlers = handlers.map(wrap);
-      route.post.apply(route, mappedHandlers);
-      this.use(errorHandler);
-      return this;
+    return {
+      ...router,
+      ...routeObject
     };
-
-    extendedRouter.put = function(path: PathParams, ...handlers: any[]) {
-      const route = this.route(path);
-      const mappedHandlers = handlers.map(wrap);
-      route.put.apply(route, mappedHandlers);
-      this.use(errorHandler);
-      return this;
-    };
-
-    extendedRouter.delete = function(path: PathParams, ...handlers: any[]) {
-      const route = this.route(path);
-      const mappedHandlers = handlers.map(wrap);
-      route.delete.apply(route, mappedHandlers);
-      this.use(errorHandler);
-      return this;
-    };
-
-    router.use(extendedRouter);
-
-    return extendedRouter;
   };
 }

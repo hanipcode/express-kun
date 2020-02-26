@@ -12,7 +12,7 @@ function isMiddlewareArray(
 export default function withMiddleware(
   router: Router,
   middlewares: SupportedMiddleware
-): Router {
+) {
   let connectedMiddleware: RequestHandler[];
   if (isMiddlewareArray(middlewares)) {
     connectedMiddleware = middlewares;
@@ -20,33 +20,27 @@ export default function withMiddleware(
     connectedMiddleware = [middlewares];
   }
 
-  const extendedRouter = Router();
-
-  extendedRouter.get = function(path: PathParams, ...handlers: any[]) {
-    const route = this.route(path);
-    route.get.apply(route, [...connectedMiddleware, ...handlers]);
-    return this;
+  const routeObject = {
+    get: function(path: PathParams, ...handlers: RequestHandler[]) {
+      router.get(path, ...connectedMiddleware, ...handlers);
+      return router;
+    },
+    post: function(path: PathParams, ...handlers: RequestHandler[]) {
+      router.post(path, ...connectedMiddleware, ...handlers);
+      return router;
+    },
+    put: function(path: PathParams, ...handlers: RequestHandler[]) {
+      router.put(path, ...connectedMiddleware, ...handlers);
+      return router;
+    },
+    delete: function(path: PathParams, ...handlers: RequestHandler[]) {
+      router.delete(path, ...connectedMiddleware, ...handlers);
+      return router;
+    }
   };
 
-  extendedRouter.post = function(path: PathParams, ...handlers: any[]) {
-    const route = this.route(path);
-    route.post.apply(route, [...connectedMiddleware, ...handlers]);
-    return this;
+  return {
+    ...router,
+    ...routeObject
   };
-
-  extendedRouter.put = function(path: PathParams, ...handlers: any[]) {
-    const route = this.route(path);
-    route.put.apply(route, [...connectedMiddleware, ...handlers]);
-    return this;
-  };
-
-  extendedRouter.delete = function(path: PathParams, ...handlers: any[]) {
-    const route = this.route(path);
-    route.delete.apply(route, [...connectedMiddleware, ...handlers]);
-    return this;
-  };
-
-  router.use(extendedRouter);
-
-  return extendedRouter;
 }

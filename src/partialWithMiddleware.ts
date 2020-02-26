@@ -27,33 +27,28 @@ export default function partialWithMiddleware(
       connectedMiddleware = [middlewares];
     }
     if (isRouter(routerOrMiddleware)) {
-      const extendedRouter = Router();
-      extendedRouter.get = function(path: PathParams, ...handlers: any[]) {
-        const route = this.route(path);
-        route.get.apply(route, [...connectedMiddleware, ...handlers]);
-        return this;
+      const routeObject = {
+        get: function(path: PathParams, ...handlers: RequestHandler[]) {
+          routerOrMiddleware.get(path, ...connectedMiddleware, ...handlers);
+          return routerOrMiddleware;
+        },
+        post: function(path: PathParams, ...handlers: RequestHandler[]) {
+          routerOrMiddleware.post(path, ...connectedMiddleware, ...handlers);
+          return routerOrMiddleware;
+        },
+        put: function(path: PathParams, ...handlers: RequestHandler[]) {
+          routerOrMiddleware.put(path, ...connectedMiddleware, ...handlers);
+          return routerOrMiddleware;
+        },
+        delete: function(path: PathParams, ...handlers: RequestHandler[]) {
+          routerOrMiddleware.delete(path, ...connectedMiddleware, ...handlers);
+          return routerOrMiddleware;
+        }
       };
-
-      extendedRouter.post = function(path: PathParams, ...handlers: any[]) {
-        const route = this.route(path);
-        route.post.apply(route, [...connectedMiddleware, ...handlers]);
-        return this;
+      return {
+        ...routerOrMiddleware,
+        routeObject
       };
-
-      extendedRouter.put = function(path: PathParams, ...handlers: any[]) {
-        const route = this.route(path);
-        route.put.apply(route, [...connectedMiddleware, ...handlers]);
-        return this;
-      };
-
-      extendedRouter.delete = function(path: PathParams, ...handlers: any[]) {
-        const route = this.route(path);
-        route.delete.apply(route, [...connectedMiddleware, ...handlers]);
-        return this;
-      };
-
-      routerOrMiddleware.use(extendedRouter);
-      return extendedRouter;
     }
 
     let reconnectedMiddleware: RequestHandler[];
