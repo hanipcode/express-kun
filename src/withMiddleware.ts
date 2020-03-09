@@ -12,7 +12,7 @@ function isMiddlewareArray(
 export default function withMiddleware(
   router: Router,
   middlewares: SupportedMiddleware
-) {
+): Router {
   let connectedMiddleware: RequestHandler[];
   if (isMiddlewareArray(middlewares)) {
     connectedMiddleware = middlewares;
@@ -39,6 +39,7 @@ export default function withMiddleware(
     }
   };
 
+  // @ts-ignore
   return {
     ...router,
     ...routeObject

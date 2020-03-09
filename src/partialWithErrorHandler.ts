@@ -5,7 +5,7 @@ import wrap from "./lib/wrap";
 export default function partialWithErrorHandler(
   errorHandler: ErrorRequestHandler
 ): (router: Router) => void {
-  return function(router: Router) {
+  return function(router: Router): Router {
     const routeObject = {
       get: function(path: PathParams, ...handlers: RequestHandler[]) {
         const mappedHandlers = handlers.map(wrap);
@@ -25,6 +25,7 @@ export default function partialWithErrorHandler(
       }
     };
 
+    // @ts-ignore
     return {
       ...router,
       ...routeObject

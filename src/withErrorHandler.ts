@@ -5,7 +5,7 @@ import wrap from "./lib/wrap";
 export default function withErrorHandler(
   router: Router,
   errorHandler: ErrorRequestHandler
-) {
+): Router {
   const routeObject = {
     get: function(path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
@@ -25,6 +25,7 @@ export default function withErrorHandler(
     }
   };
 
+  // @ts-ignore
   return {
     ...router,
     ...routeObject

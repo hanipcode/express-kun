@@ -19,7 +19,7 @@ function isRouter(
 export default function partialWithMiddleware(
   middlewares: SupportedMiddleware
 ): (routerOrMiddleware: RotuerOrMiddleware) => void {
-  return function(routerOrMiddleware: RotuerOrMiddleware) {
+  return function(routerOrMiddleware: RotuerOrMiddleware): Router | Function {
     let connectedMiddleware: RequestHandler[];
     if (isMiddlewareArray(middlewares)) {
       connectedMiddleware = middlewares;
@@ -45,10 +45,12 @@ export default function partialWithMiddleware(
           return routerOrMiddleware;
         }
       };
+
+      // @ts-ignore
       return {
         ...routerOrMiddleware,
         routeObject
-      };
+      } as Router;
     }
 
     let reconnectedMiddleware: RequestHandler[];

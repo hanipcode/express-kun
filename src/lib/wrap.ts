@@ -5,12 +5,7 @@ const wrap = (fn: Function) => async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const result = await fn(req, res, next);
-    return result.catch(next);
-  } catch (err) {
-    return next(err);
-  }
+  fn(req, res, next).catch(next);
 };
 
 export default wrap;
