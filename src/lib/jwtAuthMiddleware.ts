@@ -31,6 +31,13 @@ export default function jwtAuthMiddleware(
         errorHandler(e, req, res, next);
         return;
       }
+      if (e instanceof jwt.TokenExpiredError) {
+        res.status(401).json({
+          message: "Session Expired",
+          error: e.message
+        });
+        return;
+      }
       if (e instanceof jwt.JsonWebTokenError || e instanceof TokenError) {
         res.status(401).json({
           message: "Invalid Token",
