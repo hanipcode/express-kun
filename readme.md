@@ -9,3 +9,5 @@ or
 `npm install express-kun`
 
 ## Documentation
+
+Read the documentation [here](https://hanipcode.github.io/express-kun/#/)
