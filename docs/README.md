@@ -10,6 +10,7 @@ or
 # Tutorials
 
 - [Creating a Simple Express JWT Authentication Middleware with Express-Kun ](https://dev.to/hanipcode/creating-a-simple-express-jwt-authentication-middleware-in-5-minutes-with-express-kun-4aa3)
+- [Building an Express Application with Express-Kun, a functional-paradigm express helper ](https://dev.to/hanipcode/building-an-express-application-with-express-kun-a-functional-paradigm-express-helper-part-1-intro-and-setup-26gp)
 
 # Boilerplate 
 - [hanipcode/express-kun-boilerplate](https://github.com/hanipcode/express-kun-boilerplate)
