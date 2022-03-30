@@ -19,29 +19,32 @@ export default function withMiddleware(
   } else {
     connectedMiddleware = [middlewares];
   }
+  const originalProto = Object.getPrototypeOf(router);
 
-  const routeObject = {
-    get: function(path: PathParams, ...handlers: RequestHandler[]) {
-      router.get(path, ...connectedMiddleware, ...handlers);
+  Object.setPrototypeOf(router, {
+    ...originalProto,
+    get: function (path: PathParams, ...handlers: RequestHandler[]) {
+      originalProto.get.call(this, path, ...connectedMiddleware, ...handlers);
       return router;
     },
-    post: function(path: PathParams, ...handlers: RequestHandler[]) {
-      router.post(path, ...connectedMiddleware, ...handlers);
+    post: function (path: PathParams, ...handlers: RequestHandler[]) {
+      originalProto.post.call(this, path, ...connectedMiddleware, ...handlers);
       return router;
     },
-    put: function(path: PathParams, ...handlers: RequestHandler[]) {
-      router.put(path, ...connectedMiddleware, ...handlers);
+    put: function (path: PathParams, ...handlers: RequestHandler[]) {
+      originalProto.put.call(this, path, ...connectedMiddleware, ...handlers);
       return router;
     },
-    delete: function(path: PathParams, ...handlers: RequestHandler[]) {
-      router.delete(path, ...connectedMiddleware, ...handlers);
+    delete: function (path: PathParams, ...handlers: RequestHandler[]) {
+      originalProto.delete.call(
+        this,
+        path,
+        ...connectedMiddleware,
+        ...handlers
+      );
       return router;
-    }
-  };
+    },
+  });
 
-  // @ts-ignore
-  return {
-    ...router,
-    ...routeObject
-  };
+  return router;
 }

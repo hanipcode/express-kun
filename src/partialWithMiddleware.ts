@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { IRouter, PathParams, RequestHandler } from "express-serve-static-core";
+import withMiddleware from "./withMiddleware";
 
 type SupportedMiddleware = RequestHandler | RequestHandler[];
 type RotuerOrMiddleware = Router | SupportedMiddleware;
@@ -19,7 +20,7 @@ function isRouter(
 export default function partialWithMiddleware(
   middlewares: SupportedMiddleware
 ): (routerOrMiddleware: RotuerOrMiddleware) => void {
-  return function(routerOrMiddleware: RotuerOrMiddleware): Router | Function {
+  return function (routerOrMiddleware: RotuerOrMiddleware): Router | Function {
     let connectedMiddleware: RequestHandler[];
     if (isMiddlewareArray(middlewares)) {
       connectedMiddleware = middlewares;
@@ -27,30 +28,7 @@ export default function partialWithMiddleware(
       connectedMiddleware = [middlewares];
     }
     if (isRouter(routerOrMiddleware)) {
-      const routeObject = {
-        get: function(path: PathParams, ...handlers: RequestHandler[]) {
-          routerOrMiddleware.get(path, ...connectedMiddleware, ...handlers);
-          return routerOrMiddleware;
-        },
-        post: function(path: PathParams, ...handlers: RequestHandler[]) {
-          routerOrMiddleware.post(path, ...connectedMiddleware, ...handlers);
-          return routerOrMiddleware;
-        },
-        put: function(path: PathParams, ...handlers: RequestHandler[]) {
-          routerOrMiddleware.put(path, ...connectedMiddleware, ...handlers);
-          return routerOrMiddleware;
-        },
-        delete: function(path: PathParams, ...handlers: RequestHandler[]) {
-          routerOrMiddleware.delete(path, ...connectedMiddleware, ...handlers);
-          return routerOrMiddleware;
-        }
-      };
-
-      // @ts-ignore
-      return {
-        ...routerOrMiddleware,
-        routeObject
-      } as Router;
+      return withMiddleware(routerOrMiddleware, middlewares);
     }
 
     let reconnectedMiddleware: RequestHandler[];
@@ -61,7 +39,7 @@ export default function partialWithMiddleware(
     }
     return partialWithMiddleware([
       ...connectedMiddleware,
-      ...reconnectedMiddleware
+      ...reconnectedMiddleware,
     ]);
   };
 }

@@ -17,28 +17,28 @@ export default function groupPrefix(router: Router, prefix: string) {
     return `${prefix}${path}`;
   }
 
-  const routeObject = {
-    use: router.use,
-    get: (path: PathParams, ...handlers: any[]): Router => {
-      return router.get(getPrefixedPath(path), ...handlers);
+  const originalProto = Object.getPrototypeOf(router);
+  Object.setPrototypeOf(router, {
+    ...originalProto,
+    get: function (path: PathParams, ...handlers: any[]) {
+      return originalProto.get.call(this, getPrefixedPath(path), ...handlers);
     },
-    post: (path: PathParams, ...handlers: any[]) => {
-      return router.post(getPrefixedPath(path), ...handlers);
+    post: function (path: PathParams, ...handlers: any[]) {
+      return originalProto.post.call(this, getPrefixedPath(path), ...handlers);
     },
-    delete: (path: PathParams, ...handlers: any[]) => {
-      return router.delete(getPrefixedPath(path), ...handlers);
+    delete: function (path: PathParams, ...handlers: any[]) {
+      return originalProto.delete.call(
+        this,
+        getPrefixedPath(path),
+        ...handlers
+      );
     },
-    put: (path: PathParams, ...handlers: any[]) => {
-      return router.put(getPrefixedPath(path), ...handlers);
-    }
-  };
+    put: function (path: PathParams, ...handlers: any[]) {
+      return originalProto.put.call(this, getPrefixedPath(path), ...handlers);
+    },
+  });
 
-  const prefixedRoute = {
-    ...router,
-    ...routeObject
-  };
-  return function(callback: (router: Router) => void) {
-    // @ts-ignore
-    callback(prefixedRoute);
+  return function (callback: (router: Router) => void) {
+    callback(router);
   };
 }

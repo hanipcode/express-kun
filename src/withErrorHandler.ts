@@ -6,28 +6,27 @@ export default function withErrorHandler(
   router: Router,
   errorHandler: ErrorRequestHandler
 ): Router {
-  const routeObject = {
-    get: function(path: PathParams, ...handlers: RequestHandler[]) {
+  const originalProto = Object.getPrototypeOf(router);
+  Object.setPrototypeOf(router, {
+    ...originalProto,
+    post: function (path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
-      router.get(path, mappedHandlers, errorHandler);
+      originalProto.post.call(this, path, mappedHandlers, errorHandler);
     },
-    post: function(path: PathParams, ...handlers: RequestHandler[]) {
+    get: function (path: PathParams, ...handlers: RequestHandler[]) {
+      console.log("HA");
       const mappedHandlers = handlers.map(wrap);
-      router.post(path, mappedHandlers, errorHandler);
+      originalProto.get.call(this, path, mappedHandlers, errorHandler);
     },
-    put: function(path: PathParams, ...handlers: RequestHandler[]) {
+    put: function (path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
-      router.put(path, mappedHandlers, errorHandler);
+      originalProto.put.call(this, path, mappedHandlers, errorHandler);
     },
-    delete: function(path: PathParams, ...handlers: RequestHandler[]) {
+    delete: function (path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
-      router.delete(path, mappedHandlers, errorHandler);
-    }
-  };
+      originalProto.delete.call(this, path, mappedHandlers, errorHandler);
+    },
+  });
 
-  // @ts-ignore
-  return {
-    ...router,
-    ...routeObject
-  };
+  return router;
 }

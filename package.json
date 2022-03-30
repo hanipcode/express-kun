@@ -5,8 +5,9 @@
   "main": "./dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npx jest",
     "build": "tsc",
+    "build:watch": "tsc --watch",
     "prepare": "npm run build"
   },
   "repository": {
@@ -27,12 +28,17 @@
   },
   "homepage": "https://github.com/hanipcode/express-kun#readme",
   "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/jest": "^27.4.1",
     "@types/jsonwebtoken": "^8.3.7",
-    "typescript": "^3.7.5",
-    "@types/express": "^4.17.2"
+    "@types/supertest": "^2.0.12",
+    "supertest": "^6.2.2",
+    "typescript": "^3.7.5"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1"
+    "jest": "^27.5.1",
+    "jsonwebtoken": "^8.5.1",
+    "ts-jest": "^27.1.4"
   }
 }
