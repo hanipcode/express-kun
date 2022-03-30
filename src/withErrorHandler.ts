@@ -11,20 +11,27 @@ export default function withErrorHandler(
     ...originalProto,
     post: function (path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
-      originalProto.post.call(this, path, mappedHandlers, errorHandler);
+      return originalProto.post
+        .call(this, path, ...mappedHandlers)
+        .use(errorHandler);
     },
     get: function (path: PathParams, ...handlers: RequestHandler[]) {
-      console.log("HA");
       const mappedHandlers = handlers.map(wrap);
-      originalProto.get.call(this, path, mappedHandlers, errorHandler);
+      return originalProto.get
+        .call(this, path, ...mappedHandlers)
+        .use(errorHandler);
     },
     put: function (path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
-      originalProto.put.call(this, path, mappedHandlers, errorHandler);
+      return originalProto.put
+        .call(this, path, ...mappedHandlers)
+        .use(errorHandler);
     },
     delete: function (path: PathParams, ...handlers: RequestHandler[]) {
       const mappedHandlers = handlers.map(wrap);
-      originalProto.delete.call(this, path, mappedHandlers, errorHandler);
+      return originalProto.delete
+        .call(this, path, ...mappedHandlers)
+        .use(errorHandler);
     },
   });
 
