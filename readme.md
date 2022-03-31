@@ -1,4 +1,3 @@
-# Express-Kun
 <p align="center">
   <img width="350" height="350" src="./docs/img/logo.png">
 </p>
