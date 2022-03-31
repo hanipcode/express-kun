@@ -1,6 +1,6 @@
 # Express-Kun
 <p align="center">
-  <img width="500" height="500" src="./docs/img/logo.png">
+  <img width="250" height="250" src="./docs/img/logo.png">
 </p>
 <p align="center">
   Express Kun is providing you common helper for common express use case with functional programming mindset.
