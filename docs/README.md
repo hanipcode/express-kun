@@ -1,7 +1,7 @@
 # Express Kun
 <br>
 <p align="center">
-  <img width="100%" src="./img/banner.png">
+  <img height="350" src="./img/banner.png">
 </p>
 <p align="center">
   Express Kun is providing you common helper for common express use case with functional programming mindset.
