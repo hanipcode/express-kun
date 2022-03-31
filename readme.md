@@ -1,6 +1,10 @@
 # Express-Kun
-
-Express Kun is providing you common helper for common express use case with functional programming mindset.
+<p align="center">
+  <img width="460" height="300" src="./docs/img/logo.png">
+</p>
+<p align="center">
+  Express Kun is providing you common helper for common express use case with functional programming mindset.
+</p>
 
 ## Installation
 

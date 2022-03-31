@@ -1,13 +1,8 @@
 import { Router } from "express";
-import { IRouter, PathParams, RequestHandler } from "express-serve-static-core";
-
-type SupportedMiddleware = RequestHandler | RequestHandler[];
-
-function isMiddlewareArray(
-  middleware: SupportedMiddleware
-): middleware is RequestHandler[] {
-  return Array.isArray(middleware);
-}
+import { PathParams, RequestHandler } from "express-serve-static-core";
+import isMiddlewareArray, {
+  SupportedMiddleware,
+} from "./lib/isMiddlewareArray";
 
 export default function withMiddleware(
   router: Router,

@@ -3,7 +3,7 @@ import {
   Response,
   NextFunction,
   ErrorRequestHandler,
-  Router
+  Router,
 } from "express";
 import * as jwt from "jsonwebtoken";
 import getTokenFromBearer from "./lib/getTokenFromBearer";
