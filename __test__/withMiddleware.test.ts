@@ -73,6 +73,47 @@ describe("withMiddleware", () => {
         expect(json.dataText).toEqual(dataText);
         expect(json.locals.isMiddlewaredArr).toEqual([true, true]);
       });
+
+      it("work on chained", async () => {
+        const dataText = "errorTesting";
+        // @ts-ignore
+        function middleware(req, res, next) {
+          if (!res.locals.content) {
+            res.locals.content = [];
+          }
+          res.locals.content.push(1);
+          next();
+        }
+        // @ts-ignore
+        function middleware2(req, res, next) {
+          res.locals.content.push(2);
+          next();
+        }
+
+        const app = express();
+        const router = express.Router();
+        const middlewaredRoute = withMiddleware(
+          withMiddleware(router, middleware),
+          middleware2
+        );
+
+        // @ts-ignore
+        middlewaredRoute[routeType]("/", (req, res, next) => {
+          res.json({
+            locals: res.locals,
+            dataText,
+          });
+        });
+
+        app.use(middlewaredRoute);
+
+        const agent = request(app);
+        const response = await agent[routeType]("/");
+        const json = JSON.parse(response.text);
+        expect(response.status).toEqual(200);
+        expect(json.dataText).toEqual(dataText);
+        expect(json.locals.content).toEqual([1, 2]);
+      });
     }
   );
 });

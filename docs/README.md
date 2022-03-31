@@ -331,7 +331,7 @@ export const authMiddleware = partialWithJWTAuthMiddleware(
 const protectedRoute = authMiddleware(router);
 ```
 
-## Callback API
+## Grouping Routes
 
 ### `groupMiddleware(router: Router, middlewares: SupportedMiddleware): (callback: (router: Router) => void) => void;`
 
