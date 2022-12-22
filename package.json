@@ -38,7 +38,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "jest": "^27.5.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "ts-jest": "^27.1.4"
   }
 }
